@@ -1,8 +1,8 @@
-const {Engine, World, Bodies, Render, Runner, Body} = Matter;
+const {Engine, World, Bodies, Render, Runner, Body, Events} = Matter;
 
-const cells = 15;
-const width = 600;
-const height = 600;
+const cells = 3;
+const width = window.innerWidth;
+const height = window.innerHeight;
 const unitLength = width / cells;
 
 const engine = Engine.create();
@@ -13,7 +13,7 @@ const render = Render.create({
   element: document.body,
   engine,
   options: {
-    wireframes: false,
+    wireframes: true,
     width,
     height,
   },
@@ -121,7 +121,7 @@ horizontals.forEach((row, rowIndex) => {
       rowIndex * unitLength + unitLength,
       unitLength,
       10,
-      {isStatic: true}
+      {label: "wall", isStatic: true, render: {fillStyle: "red"}}
     );
     World.add(world, wall);
   });
@@ -137,7 +137,7 @@ verticals.forEach((row, rowIndex) => {
       rowIndex * unitLength + unitLength / 2,
       10,
       unitLength,
-      {isStatic: true}
+      {label: "wall", isStatic: true, render: {fillStyle: "red"}}
     );
     World.add(world, wall);
   });
@@ -149,12 +149,13 @@ const goal = Bodies.rectangle(
   height - unitLength / 2,
   unitLength * 0.7,
   unitLength * 0.7,
-  {isStatic: true, render: {fillStyle: "green"}}
+  {isStatic: true, label: "goal", render: {fillStyle: "green"}}
 );
 World.add(world, goal);
 
 // Ball
 const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4, {
+  label: "ball",
   render: {fillStyle: "grey"},
 });
 World.add(world, ball);
@@ -164,18 +165,34 @@ document.addEventListener("keydown", (e) => {
   console.log(x, y);
   if (e.keyCode === 87) {
     Body.setVelocity(ball, {x, y: y - 5});
-    console.log("move ball up");
   }
   if (e.keyCode === 68) {
     Body.setVelocity(ball, {x: x + 5, y});
-    console.log("move ball right");
   }
   if (e.keyCode === 83) {
     Body.setVelocity(ball, {x, y: y + 5});
-    console.log("move ball down");
   }
   if (e.keyCode === 65) {
     Body.setVelocity(ball, {x: x - 5, y});
-    console.log("move ball left");
   }
+});
+
+// Win Condition
+Events.on(engine, "collisionStart", (event) => {
+  event.pairs.forEach((collision) => {
+    const labels = ["ball", "goal"];
+
+    if (
+      labels.includes(collision.bodyA.label) &&
+      labels.includes(collision.bodyB.label)
+    ) {
+      console.log(collision);
+      world.gravity.y = 1;
+      world.bodies.forEach((body) => {
+        if (body.label === "wall") {
+          Body.setStatic(body, false);
+        }
+      });
+    }
+  });
 });
