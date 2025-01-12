@@ -141,6 +141,7 @@ verticals.forEach((row, rowIndex) => {
   });
 });
 
+// Goal
 const goal = Bodies.rectangle(
   width - unitLength / 2,
   height - unitLength / 2,
@@ -149,3 +150,26 @@ const goal = Bodies.rectangle(
   {isStatic: true, render: {fillStyle: "green"}}
 );
 World.add(world, goal);
+
+// Ball
+const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4, {
+  isStatic: true,
+  render: {fillStyle: "grey"},
+});
+World.add(world, ball);
+
+document.addEventListener("keydown", (e) => {
+  // console.log(e);
+  if (e.keyCode === 87) {
+    console.log("move ball up");
+  }
+  if (e.keyCode === 68) {
+    console.log("move ball right");
+  }
+  if (e.keyCode === 83) {
+    console.log("move ball down");
+  }
+  if (e.keyCode === 65) {
+    console.log("move ball left");
+  }
+});
