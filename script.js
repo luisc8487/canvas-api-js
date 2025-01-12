@@ -6,6 +6,8 @@ const height = 600;
 const unitLength = width / cells;
 
 const engine = Engine.create();
+engine.world.gravity.y = 0;
+
 const {world} = engine;
 const render = Render.create({
   element: document.body,
@@ -153,7 +155,6 @@ World.add(world, goal);
 
 // Ball
 const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4, {
-  // isStatic: true,
   render: {fillStyle: "grey"},
 });
 World.add(world, ball);
