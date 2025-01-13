@@ -16,7 +16,7 @@ const render = Render.create({
   element: document.body,
   engine,
   options: {
-    wireframes: true,
+    wireframes: false,
     width,
     height,
   },
@@ -190,7 +190,8 @@ Events.on(engine, "collisionStart", (event) => {
       labels.includes(collision.bodyA.label) &&
       labels.includes(collision.bodyB.label)
     ) {
-      console.log(collision);
+      document.querySelector(".winner").classList.remove("hidden");
+      // console.log(collision);
       world.gravity.y = 1;
       world.bodies.forEach((body) => {
         if (body.label === "wall") {
